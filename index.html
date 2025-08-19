@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathHealth - Juego Matemático de Hábitos Saludables</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; }
+        .pulse-animation { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .slide-in { animation: slideIn 0.5s ease-out; }
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .bounce-in { animation: bounceIn 0.6s ease-out; }
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white/20 backdrop-blur-md shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-3xl font-bold text-white">🧮 MathHealth</h1>
+                <div class="flex items-center space-x-4">
+                    <div class="bg-white/30 rounded-full px-4 py-2">
+                        <span class="text-white font-semibold">Puntos: <span id="totalScore">0</span></span>
+                    </div>
+                    <div class="bg-white/30 rounded-full px-4 py-2">
+                        <span class="text-white font-semibold">Nivel: <span id="currentLevel">1</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Game Container -->
+    <div class="container mx-auto px-6 py-8">
+        <!-- Game Selection Menu -->
+        <div id="gameMenu" class="max-w-4xl mx-auto">
+            <div class="text-center mb-8">
+                <h2 class="text-4xl font-bold text-white mb-4">¡Elige tu Desafío Matemático!</h2>
+                <p class="text-xl text-white/90">Aprende matemáticas mientras cuidas tu salud</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Decimales y Nutrición -->
+                <div class="bg-white/20 backdrop-blur-md rounded-2xl p-6 hover:bg-white/30 transition-all cursor-pointer pulse-animation" onclick="startGame('nutrition')">
+                    <div class="text-center">
+                        <div class="text-6xl mb-4">🥗</div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Nutrición Decimal</h3>
+                        <p class="text-white/80 mb-4">Calcula calorías y nutrientes usando números decimales</p>
+                        <div class="bg-green-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                            Decimales • Operaciones
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Funciones Lineales y Ejercicio -->
+                <div class="bg-white/20 backdrop-blur-md rounded-2xl p-6 hover:bg-white/30 transition-all cursor-pointer pulse-animation" onclick="startGame('exercise')">
+                    <div class="text-center">
+                        <div class="text-6xl mb-4">🏃‍♂️</div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Ejercicio Lineal</h3>
+                        <p class="text-white/80 mb-4">Modela tu progreso físico con funciones lineales</p>
+                        <div class="bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                            Funciones • Gráficas
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progresiones y Sueño -->
+                <div class="bg-white/20 backdrop-blur-md rounded-2xl p-6 hover:bg-white/30 transition-all cursor-pointer pulse-animation" onclick="startGame('sleep')">
+                    <div class="text-center">
+                        <div class="text-6xl mb-4">😴</div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Sueño Progresivo</h3>
+                        <p class="text-white/80 mb-4">Optimiza tu descanso con progresiones aritméticas</p>
+                        <div class="bg-purple-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                            Progresiones • Secuencias
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Productos Notables y Hidratación -->
+                <div class="bg-white/20 backdrop-blur-md rounded-2xl p-6 hover:bg-white/30 transition-all cursor-pointer pulse-animation" onclick="startGame('hydration')">
+                    <div class="text-center">
+                        <div class="text-6xl mb-4">💧</div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Hidratación Algebraica</h3>
+                        <p class="text-white/80 mb-4">Calcula tu consumo de agua con productos notables</p>
+                        <div class="bg-cyan-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                            Productos Notables
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Factorización y Medicina -->
+                <div class="bg-white/20 backdrop-blur-md rounded-2xl p-6 hover:bg-white/30 transition-all cursor-pointer pulse-animation" onclick="startGame('medicine')">
+                    <div class="text-center">
+                        <div class="text-6xl mb-4">💊</div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Medicina Factorial</h3>
+                        <p class="text-white/80 mb-4">Dosifica medicamentos usando factorización</p>
+                        <div class="bg-red-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                            Factorización
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Números Reales y Bienestar -->
+                <div class="bg-white/20 backdrop-blur-md rounded-2xl p-6 hover:bg-white/30 transition-all cursor-pointer pulse-animation" onclick="startGame('wellness')">
+                    <div class="text-center">
+                        <div class="text-6xl mb-4">🧘‍♀️</div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Bienestar Real</h3>
+                        <p class="text-white/80 mb-4">Equilibra tu vida con números reales e irracionales</p>
+                        <div class="bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
+                            Números Reales
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Area -->
+        <div id="gameArea" class="hidden max-w-4xl mx-auto">
+            <div class="bg-white/20 backdrop-blur-md rounded-2xl p-8">
+                <!-- Game Header -->
+                <div class="flex justify-between items-center mb-6">
+                    <button onclick="backToMenu()" class="bg-white/30 hover:bg-white/40 text-white px-4 py-2 rounded-lg transition-all">
+                        ← Volver al Menú
+                    </button>
+                    <div class="text-center">
+                        <h3 id="gameTitle" class="text-2xl font-bold text-white"></h3>
+                        <p id="gameSubtitle" class="text-white/80"></p>
+                    </div>
+                    <div class="bg-white/30 rounded-lg px-4 py-2">
+                        <span class="text-white font-semibold">Pregunta <span id="questionNumber">1</span>/5</span>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-white/20 rounded-full h-3 mb-6">
+                    <div id="progressBar" class="bg-gradient-to-r from-green-400 to-blue-500 h-3 rounded-full transition-all duration-500" style="width: 20%"></div>
+                </div>
+
+                <!-- Question Area -->
+                <div id="questionArea" class="mb-8">
+                    <div class="bg-white/30 rounded-xl p-6 mb-6">
+                        <div id="questionContent" class="text-white text-lg"></div>
+                        <div id="questionImage" class="mt-4 text-center"></div>
+                    </div>
+
+                    <!-- Answer Options -->
+                    <div id="answerOptions" class="grid md:grid-cols-2 gap-4"></div>
+
+                    <!-- Input Answer -->
+                    <div id="inputAnswer" class="hidden">
+                        <input type="text" id="userAnswer" class="w-full p-4 rounded-xl text-lg text-center border-2 border-white/30 bg-white/20 text-white placeholder-white/60" placeholder="Escribe tu respuesta aquí">
+                        <button onclick="checkAnswer()" class="w-full mt-4 bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-4 px-8 rounded-xl transition-all">
+                            Verificar Respuesta
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Feedback Area -->
+                <div id="feedbackArea" class="hidden">
+                    <div id="feedbackContent" class="text-center p-6 rounded-xl mb-4"></div>
+                    <button id="nextButton" onclick="nextQuestion()" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-4 px-8 rounded-xl transition-all">
+                        Siguiente Pregunta
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Area -->
+        <div id="resultsArea" class="hidden max-w-2xl mx-auto">
+            <div class="bg-white/20 backdrop-blur-md rounded-2xl p-8 text-center">
+                <div class="text-6xl mb-4">🏆</div>
+                <h2 class="text-3xl font-bold text-white mb-4">¡Juego Completado!</h2>
+                <div class="bg-white/30 rounded-xl p-6 mb-6">
+                    <div class="text-2xl font-bold text-white mb-2">Tu Puntuación</div>
+                    <div id="finalScore" class="text-4xl font-bold text-yellow-300"></div>
+                    <div id="finalMessage" class="text-white/80 mt-2"></div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <button onclick="backToMenu()" class="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-4 px-8 rounded-xl transition-all">
+                        Jugar Otro Tema
+                    </button>
+                    <button onclick="restartGame()" class="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white font-bold py-4 px-8 rounded-xl transition-all">
+                        Jugar de Nuevo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentGame = '';
+        let currentQuestion = 0;
+        let score = 0;
+        let totalScore = 0;
+        let questions = [];
+
+        const gameData = {
+            nutrition: {
+                title: "🥗 Nutrición Decimal",
+                subtitle: "Calcula calorías y nutrientes",
+                questions: [
+                    {
+                        question: "María consume 2.5 porciones de cereal que contiene 125.6 calorías por porción. ¿Cuántas calorías consume en total?",
+                        type: "input",
+                        answer: "314",
+                        explanation: "2.5 × 125.6 = 314 calorías",
+                        health_tip: "💡 Una porción adecuada de cereal aporta energía para comenzar el día."
+                    },
+                    {
+                        question: "Un batido saludable contiene 15.75g de proteína, 8.25g de fibra y 12.5g de azúcares naturales. ¿Cuál es el total de estos nutrientes?",
+                        type: "multiple",
+                        options: ["36.5g", "35.75g", "36.25g", "37.0g"],
+                        answer: 0,
+                        explanation: "15.75 + 8.25 + 12.5 = 36.5g",
+                        health_tip: "🥤 Los batidos naturales son excelentes fuentes de nutrientes."
+                    },
+                    {
+                        question: "Si 100g de almendras tienen 21.15g de proteína, ¿cuánta proteína hay en 0.75 porciones de 100g?",
+                        type: "input",
+                        answer: "15.8625",
+                        explanation: "21.15 × 0.75 = 15.8625g de proteína",
+                        health_tip: "🥜 Las almendras son ricas en proteínas y grasas saludables."
+                    },
+                    {
+                        question: "Ana quiere dividir 456.8 calorías entre 4 comidas del día. ¿Cuántas calorías por comida?",
+                        type: "multiple",
+                        options: ["114.2 cal", "115.7 cal", "114.7 cal", "116.2 cal"],
+                        answer: 0,
+                        explanation: "456.8 ÷ 4 = 114.2 calorías por comida",
+                        health_tip: "🍽️ Distribuir las calorías en varias comidas mejora el metabolismo."
+                    },
+                    {
+                        question: "Un plato saludable debe tener 0.5 del plato con vegetales, 0.25 con proteína y 0.25 con carbohidratos. Si el plato tiene 400g, ¿cuántos gramos de vegetales necesitas?",
+                        type: "input",
+                        answer: "200",
+                        explanation: "400 × 0.5 = 200g de vegetales",
+                        health_tip: "🥬 Los vegetales deben ocupar la mitad de tu plato para una alimentación balanceada."
+                    }
+                ]
+            },
+            exercise: {
+                title: "🏃‍♂️ Ejercicio Lineal",
+                subtitle: "Modela tu progreso físico",
+                questions: [
+                    {
+                        question: "Juan corre siguiendo la función f(x) = 2x + 5, donde x son los días y f(x) los kilómetros. ¿Cuántos km correrá el día 10?",
+                        type: "input",
+                        answer: "25",
+                        explanation: "f(10) = 2(10) + 5 = 25 km",
+                        health_tip: "🏃‍♂️ El ejercicio progresivo ayuda a mejorar la resistencia gradualmente."
+                    },
+                    {
+                        question: "La función que representa las calorías quemadas es C(t) = 8t + 50, donde t son los minutos. ¿Cuántas calorías se queman en 30 minutos?",
+                        type: "multiple",
+                        options: ["290 cal", "280 cal", "290 cal", "300 cal"],
+                        answer: 0,
+                        explanation: "C(30) = 8(30) + 50 = 290 calorías",
+                        health_tip: "🔥 Quemar calorías de forma constante mejora la salud cardiovascular."
+                    },
+                    {
+                        question: "Si la función de flexiones es F(d) = 3d + 12, donde d son los días, ¿en qué día podrás hacer 30 flexiones?",
+                        type: "input",
+                        answer: "6",
+                        explanation: "30 = 3d + 12, entonces 18 = 3d, d = 6 días",
+                        health_tip: "💪 Las flexiones fortalecen múltiples grupos musculares."
+                    },
+                    {
+                        question: "Tu frecuencia cardíaca durante ejercicio sigue H(t) = -2t + 160. ¿Cuál será tu frecuencia después de 20 minutos?",
+                        type: "multiple",
+                        options: ["120 bpm", "125 bpm", "115 bpm", "130 bpm"],
+                        answer: 0,
+                        explanation: "H(20) = -2(20) + 160 = 120 bpm",
+                        health_tip: "❤️ Monitorear la frecuencia cardíaca optimiza el entrenamiento."
+                    },
+                    {
+                        question: "La pendiente de tu progreso en sentadillas es m = 4. Si empezaste con 10 sentadillas, ¿cuántas harás el día 7?",
+                        type: "input",
+                        answer: "38",
+                        explanation: "f(x) = 4x + 10, f(7) = 4(7) + 10 = 38 sentadillas",
+                        health_tip: "🦵 Las sentadillas fortalecen piernas y glúteos efectivamente."
+                    }
+                ]
+            },
+            sleep: {
+                title: "😴 Sueño Progresivo",
+                subtitle: "Optimiza tu descanso",
+                questions: [
+                    {
+                        question: "Tu horario de sueño sigue la progresión: 6, 6.5, 7, 7.5, ... horas. ¿Cuántas horas dormirás el día 8?",
+                        type: "input",
+                        answer: "9.5",
+                        explanation: "a₁ = 6, d = 0.5, a₈ = 6 + (8-1)×0.5 = 9.5 horas",
+                        health_tip: "😴 Aumentar gradualmente las horas de sueño mejora la recuperación."
+                    },
+                    {
+                        question: "En una semana duermes: 7, 7.25, 7.5, 7.75, 8, 8.25, 8.5 horas. ¿Cuál es la suma total de horas?",
+                        type: "multiple",
+                        options: ["54.25 h", "53.75 h", "54.5 h", "55 h"],
+                        answer: 0,
+                        explanation: "Suma de progresión: S₇ = 7×(7+8.5)/2 = 54.25 horas",
+                        health_tip: "📊 Registrar el sueño ayuda a identificar patrones saludables."
+                    },
+                    {
+                        question: "Tu calidad de sueño mejora en progresión: 60%, 65%, 70%, 75%... ¿Qué calidad tendrás en la semana 10?",
+                        type: "input",
+                        answer: "105",
+                        explanation: "a₁ = 60, d = 5, a₁₀ = 60 + (10-1)×5 = 105%",
+                        health_tip: "📈 La calidad del sueño mejora con rutinas consistentes."
+                    },
+                    {
+                        question: "Reduces la cafeína progresivamente: 4, 3.5, 3, 2.5, ... tazas. ¿Cuántas tazas tomarás el día 6?",
+                        type: "multiple",
+                        options: ["1.5 tazas", "1 taza", "2 tazas", "0.5 tazas"],
+                        answer: 0,
+                        explanation: "a₁ = 4, d = -0.5, a₆ = 4 + (6-1)×(-0.5) = 1.5 tazas",
+                        health_tip: "☕ Reducir la cafeína gradualmente mejora la calidad del sueño."
+                    },
+                    {
+                        question: "Tu tiempo de relajación antes de dormir: 10, 15, 20, 25... minutos. ¿Cuánto tiempo en el día 12?",
+                        type: "input",
+                        answer: "65",
+                        explanation: "a₁ = 10, d = 5, a₁₂ = 10 + (12-1)×5 = 65 minutos",
+                        health_tip: "🧘‍♀️ La relajación antes de dormir facilita el descanso profundo."
+                    }
+                ]
+            },
+            hydration: {
+                title: "💧 Hidratación Algebraica",
+                subtitle: "Calcula tu consumo de agua",
+                questions: [
+                    {
+                        question: "Tu consumo diario de agua es (x + 2)² litros, donde x = 1.5. ¿Cuántos litros bebes?",
+                        type: "input",
+                        answer: "12.25",
+                        explanation: "(1.5 + 2)² = (3.5)² = 12.25 litros",
+                        health_tip: "💧 Mantenerse hidratado mejora todas las funciones corporales."
+                    },
+                    {
+                        question: "La fórmula para calcular tu hidratación óptima es (a + b)² = a² + 2ab + b². Si a = 3 y b = 2, ¿cuál es el resultado?",
+                        type: "multiple",
+                        options: ["25", "23", "27", "24"],
+                        answer: 0,
+                        explanation: "(3 + 2)² = 3² + 2(3)(2) + 2² = 9 + 12 + 4 = 25",
+                        health_tip: "🧮 Los productos notables simplifican cálculos de hidratación."
+                    },
+                    {
+                        question: "Tu pérdida de líquidos durante ejercicio es (x - 1)², donde x = 4 litros. ¿Cuánto líquido pierdes?",
+                        type: "input",
+                        answer: "9",
+                        explanation: "(4 - 1)² = 3² = 9 litros",
+                        health_tip: "🏃‍♂️ Durante el ejercicio se pierde más líquido y hay que reponerlo."
+                    },
+                    {
+                        question: "La diferencia de cuadrados para tu balance hídrico es x² - 9 = (x + 3)(x - 3). Si x = 5, ¿cuál es el balance?",
+                        type: "multiple",
+                        options: ["16", "14", "18", "15"],
+                        answer: 0,
+                        explanation: "5² - 9 = 25 - 9 = 16 o (5 + 3)(5 - 3) = 8 × 2 = 16",
+                        health_tip: "⚖️ El balance hídrico debe mantenerse positivo siempre."
+                    },
+                    {
+                        question: "Tu consumo de agua en ml sigue (2x + 1)² donde x = 1. ¿Cuántos ml consumes?",
+                        type: "input",
+                        answer: "9",
+                        explanation: "(2(1) + 1)² = (3)² = 9 ml",
+                        health_tip: "📏 Medir el consumo de agua ayuda a mantener buenos hábitos."
+                    }
+                ]
+            },
+            medicine: {
+                title: "💊 Medicina Factorial",
+                subtitle: "Dosifica medicamentos",
+                questions: [
+                    {
+                        question: "La dosis de vitamina C es x² - 4x + 4 mg. Factoriza esta expresión.",
+                        type: "multiple",
+                        options: ["(x - 2)²", "(x + 2)²", "(x - 4)²", "x(x - 4)"],
+                        answer: 0,
+                        explanation: "x² - 4x + 4 = (x - 2)² (trinomio cuadrado perfecto)",
+                        health_tip: "🍊 La vitamina C fortalece el sistema inmunológico."
+                    },
+                    {
+                        question: "La concentración de un medicamento es x² - 9. Factoriza usando diferencia de cuadrados.",
+                        type: "input",
+                        answer: "(x+3)(x-3)",
+                        explanation: "x² - 9 = x² - 3² = (x + 3)(x - 3)",
+                        health_tip: "💊 La concentración correcta es crucial para la efectividad."
+                    },
+                    {
+                        question: "La dosis de calcio es 2x² + 8x. ¿Cuál es la factorización?",
+                        type: "multiple",
+                        options: ["2x(x + 4)", "x(2x + 8)", "2(x² + 4x)", "x(x + 8)"],
+                        answer: 0,
+                        explanation: "2x² + 8x = 2x(x + 4) (factor común)",
+                        health_tip: "🦴 El calcio es esencial para huesos y dientes fuertes."
+                    },
+                    {
+                        question: "Un suplemento tiene concentración x² + 5x + 6. Factoriza esta expresión.",
+                        type: "input",
+                        answer: "(x+2)(x+3)",
+                        explanation: "x² + 5x + 6 = (x + 2)(x + 3) (buscar dos números que sumen 5 y multipliquen 6)",
+                        health_tip: "💊 Los suplementos deben tomarse según indicaciones médicas."
+                    },
+                    {
+                        question: "La eliminación de toxinas sigue 3x² - 12. ¿Cuál es la factorización completa?",
+                        type: "multiple",
+                        options: ["3(x + 2)(x - 2)", "3(x² - 4)", "(3x + 6)(x - 2)", "3x(x - 4)"],
+                        answer: 0,
+                        explanation: "3x² - 12 = 3(x² - 4) = 3(x + 2)(x - 2)",
+                        health_tip: "🌿 El cuerpo elimina toxinas naturalmente con buena hidratación."
+                    }
+                ]
+            },
+            wellness: {
+                title: "🧘‍♀️ Bienestar Real",
+                subtitle: "Equilibra tu vida",
+                questions: [
+                    {
+                        question: "Tu nivel de estrés se mide con √16. ¿Cuál es este número real?",
+                        type: "input",
+                        answer: "4",
+                        explanation: "√16 = 4 (número real racional)",
+                        health_tip: "😌 Mantener el estrés bajo control mejora la salud mental."
+                    },
+                    {
+                        question: "Tu tiempo de meditación óptimo es √50 minutos. ¿Entre qué números enteros está?",
+                        type: "multiple",
+                        options: ["Entre 7 y 8", "Entre 6 y 7", "Entre 8 y 9", "Entre 5 y 6"],
+                        answer: 0,
+                        explanation: "√50 ≈ 7.07, está entre 7 y 8 (número irracional)",
+                        health_tip: "🧘‍♀️ La meditación diaria reduce el estrés y mejora la concentración."
+                    },
+                    {
+                        question: "Tu índice de bienestar es π/2. ¿Aproximadamente cuánto vale?",
+                        type: "input",
+                        answer: "1.57",
+                        explanation: "π/2 ≈ 3.14159/2 ≈ 1.57 (número irracional)",
+                        health_tip: "📊 Medir el bienestar ayuda a mantener un estilo de vida saludable."
+                    },
+                    {
+                        question: "Tu frecuencia de ejercicio semanal es √(2² + 3²). ¿Cuántas veces por semana?",
+                        type: "multiple",
+                        options: ["√13 ≈ 3.6", "√11 ≈ 3.3", "√15 ≈ 3.9", "√10 ≈ 3.2"],
+                        answer: 0,
+                        explanation: "√(4 + 9) = √13 ≈ 3.6 veces por semana",
+                        health_tip: "🏃‍♀️ Ejercitarse 3-4 veces por semana es ideal para la salud."
+                    },
+                    {
+                        question: "Tu balance vida-trabajo es 2√3. ¿Es este número racional o irracional?",
+                        type: "multiple",
+                        options: ["Irracional", "Racional", "Entero", "Natural"],
+                        answer: 0,
+                        explanation: "2√3 es irracional porque √3 es irracional",
+                        health_tip: "⚖️ El equilibrio vida-trabajo es clave para el bienestar integral."
+                    }
+                ]
+            }
+        };
+
+        function startGame(gameType) {
+            currentGame = gameType;
+            currentQuestion = 0;
+            score = 0;
+            questions = gameData[gameType].questions;
+            
+            document.getElementById('gameMenu').classList.add('hidden');
+            document.getElementById('gameArea').classList.remove('hidden');
+            document.getElementById('gameArea').classList.add('slide-in');
+            
+            document.getElementById('gameTitle').textContent = gameData[gameType].title;
+            document.getElementById('gameSubtitle').textContent = gameData[gameType].subtitle;
+            
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('questionNumber').textContent = currentQuestion + 1;
+            document.getElementById('progressBar').style.width = ((currentQuestion + 1) / questions.length) * 100 + '%';
+            
+            document.getElementById('questionContent').innerHTML = question.question;
+            
+            // Limpiar todas las áreas de respuesta y feedback
+            document.getElementById('feedbackArea').classList.add('hidden');
+            document.getElementById('answerOptions').classList.add('hidden');
+            document.getElementById('inputAnswer').classList.add('hidden');
+            
+            if (question.type === 'multiple') {
+                document.getElementById('answerOptions').classList.remove('hidden');
+                
+                let optionsHTML = '';
+                question.options.forEach((option, index) => {
+                    optionsHTML += `
+                        <button onclick="selectAnswer(${index})" class="bg-white/30 hover:bg-white/40 text-white p-4 rounded-xl transition-all text-left">
+                            <span class="font-bold">${String.fromCharCode(65 + index)})</span> ${option}
+                        </button>
+                    `;
+                });
+                document.getElementById('answerOptions').innerHTML = optionsHTML;
+            } else {
+                document.getElementById('inputAnswer').classList.remove('hidden');
+                document.getElementById('userAnswer').value = '';
+                document.getElementById('userAnswer').focus();
+            }
+        }
+
+        function selectAnswer(answerIndex) {
+            const question = questions[currentQuestion];
+            const isCorrect = answerIndex === question.answer;
+            
+            showFeedback(isCorrect, question);
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('userAnswer').value.trim();
+            const question = questions[currentQuestion];
+            const isCorrect = userAnswer.toLowerCase() === question.answer.toString().toLowerCase();
+            
+            showFeedback(isCorrect, question);
+        }
+
+        function showFeedback(isCorrect, question) {
+            document.getElementById('answerOptions').classList.add('hidden');
+            document.getElementById('inputAnswer').classList.add('hidden');
+            document.getElementById('feedbackArea').classList.remove('hidden');
+            document.getElementById('feedbackArea').classList.add('bounce-in');
+            
+            if (isCorrect) {
+                score += 20;
+                totalScore += 20;
+                document.getElementById('feedbackContent').innerHTML = `
+                    <div class="bg-green-500/30 border-2 border-green-400 rounded-xl p-4">
+                        <div class="text-4xl mb-2">🎉</div>
+                        <div class="text-2xl font-bold text-white mb-2">¡Correcto!</div>
+                        <div class="text-white/90 mb-3">${question.explanation}</div>
+                        <div class="text-green-200">${question.health_tip}</div>
+                        <div class="text-yellow-300 font-bold mt-2">+20 puntos</div>
+                    </div>
+                `;
+            } else {
+                document.getElementById('feedbackContent').innerHTML = `
+                    <div class="bg-red-500/30 border-2 border-red-400 rounded-xl p-4">
+                        <div class="text-4xl mb-2">🤔</div>
+                        <div class="text-2xl font-bold text-white mb-2">¡Inténtalo de nuevo!</div>
+                        <div class="text-white/90 mb-3">${question.explanation}</div>
+                        <div class="text-red-200">${question.health_tip}</div>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('totalScore').textContent = totalScore;
+            
+            // Resetear el botón para la siguiente pregunta
+            document.getElementById('nextButton').textContent = 'Siguiente Pregunta';
+            document.getElementById('nextButton').onclick = nextQuestion;
+            
+            if (currentQuestion === questions.length - 1) {
+                document.getElementById('nextButton').textContent = 'Ver Resultados';
+                document.getElementById('nextButton').onclick = showResults;
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('gameArea').classList.add('hidden');
+            document.getElementById('resultsArea').classList.remove('hidden');
+            document.getElementById('resultsArea').classList.add('bounce-in');
+            
+            const percentage = (score / (questions.length * 20)) * 100;
+            document.getElementById('finalScore').textContent = `${score}/${questions.length * 20} puntos (${percentage.toFixed(0)}%)`;
+            
+            let message = '';
+            if (percentage >= 90) {
+                message = '¡Excelente! Eres un experto en matemáticas saludables 🌟';
+            } else if (percentage >= 70) {
+                message = '¡Muy bien! Tienes buenos conocimientos matemáticos 👏';
+            } else if (percentage >= 50) {
+                message = '¡Buen trabajo! Sigue practicando para mejorar 💪';
+            } else {
+                message = '¡No te rindas! La práctica hace al maestro 🎯';
+            }
+            
+            document.getElementById('finalMessage').textContent = message;
+            document.getElementById('currentLevel').textContent = Math.floor(totalScore / 100) + 1;
+        }
+
+        function backToMenu() {
+            document.getElementById('gameArea').classList.add('hidden');
+            document.getElementById('resultsArea').classList.add('hidden');
+            document.getElementById('gameMenu').classList.remove('hidden');
+        }
+
+        function restartGame() {
+            startGame(currentGame);
+        }
+
+        // Allow Enter key to submit answers
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !document.getElementById('inputAnswer').classList.contains('hidden')) {
+                checkAnswer();
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9716a2bb555ecdcd',t:'MTc1NTU3NDg5MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
